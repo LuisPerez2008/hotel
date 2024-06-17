@@ -1,0 +1,8 @@
+com\hotel\modelo\Detalle.class
+com\hotel\modelo\Huesped.class
+com\hotel\modelo\Usuario.class
+com\hotel\recursos\Conexion.class
+com\hotel\modelo\Habitacion.class
+com\hotel\modelo\Reserva.class
+com\principal\Hotel.class
+com\hotel\modelo\Extra.class
