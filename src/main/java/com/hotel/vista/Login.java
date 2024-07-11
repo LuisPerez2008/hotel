@@ -10,14 +10,14 @@ public class Login extends javax.swing.JFrame {
 
     Usuario usuarioLogin = new Usuario();
     UsuarioDao usuarioDao = new UsuarioDaoImpl();
-
+    
     public Login() {
         initComponents();
         this.setTitle("Log in ");
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         txtCorreo.setText("luis@gmail.com");
-        txtPass.setText("admin123");
+        txtPass.setText("123456");
     }
 
     @SuppressWarnings("unchecked")
@@ -235,7 +235,7 @@ public class Login extends javax.swing.JFrame {
 
     private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
         if (validar()) {
-            Sistema sis = new Sistema();
+            Sistema sis = new Sistema(usuarioLogin);
             sis.setVisible(true);
             dispose();
         }

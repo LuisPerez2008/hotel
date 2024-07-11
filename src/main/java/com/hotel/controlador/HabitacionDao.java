@@ -11,4 +11,6 @@ public interface HabitacionDao {
     public void actualizar(Habitacion habitacion);
     public void borrar(int id);
     public Habitacion buscarPorId(int id);
+    public String traerTipo(int id_tipoHabitacion);
+    public void cambiarEstado(int idHabitacion, char esatdo);
 }

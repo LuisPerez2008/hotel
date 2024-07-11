@@ -1,6 +1,4 @@
-
 package com.hotel.controlador;
-
 
 import com.hotel.modelo.Habitacion;
 import com.hotel.recursos.Conexion;
@@ -11,13 +9,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HabitacionDaoImpl implements HabitacionDao{
-    
+public class HabitacionDaoImpl implements HabitacionDao {
+
     private Connection conn;
     private PreparedStatement ps;
     private ResultSet rs;
-    
-      @Override
+
+    @Override
     public List<Habitacion> listar() {
         List<Habitacion> habitaciones = new ArrayList();
         String sql = "SELECT * FROM habitacion";
@@ -126,5 +124,44 @@ public class HabitacionDaoImpl implements HabitacionDao{
             Conexion.cerrar();
         }
         return habitacion;
+    }
+
+    @Override
+    public String traerTipo(int id_tipoHabitacion) {
+        String sql = "SELECT * FROM habitacion WHERE id = ?";
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id_tipoHabitacion);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return "hola";
+    }
+
+    @Override
+    public void cambiarEstado(int idHabitacion, char estado) {
+        String sql = "UPDATE habitacion SET estado = ? WHERE id = ?";
+        try {
+            conn = Conexion.conectar(); // Establecer la conexión
+            ps = conn.prepareStatement(sql); // Preparar la consulta
+            ps.setString(1, String.valueOf(estado)); // Establecer el nuevo estado en la consulta
+            ps.setInt(2, idHabitacion); // Establecer el ID de la habitación en la consulta
+            ps.executeUpdate(); // Ejecutar la actualización
+            ps.close(); // Cerrar el PreparedStatement
+        } catch (SQLException ex) {
+            System.out.println(ex.toString()); // Manejar excepciones
+        } finally {
+            Conexion.cerrar(); // Cerrar la conexión
+        }
     }
 }

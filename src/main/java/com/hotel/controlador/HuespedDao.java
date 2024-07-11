@@ -11,4 +11,5 @@ public interface HuespedDao {
     public void actualizar(Huesped huesped);
     public void borrar(int id);
     public Huesped buscarPorId(int id);
+    public Huesped BuscarPorDni(String dni);
 }

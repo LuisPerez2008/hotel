@@ -27,7 +27,7 @@ public class ExtraDaoImpl implements ExtraDao{
                 Extra extra = new Extra();
                 extra.setId(rs.getInt("id"));
                 extra.setId_reserva(rs.getInt("id_reserva"));
-                extra.setDescripcion(rs.getString("descripcion"));
+                extra.setId_insumo(rs.getInt("id_insumo"));
                 extra.setPrecio(rs.getDouble("precio"));
                 extras.add(extra);
             }
@@ -43,12 +43,12 @@ public class ExtraDaoImpl implements ExtraDao{
 
     @Override
     public void registrar(Extra extra) {
-        String sql = "INSERT INTO extra (id_reserva, descripcion, precio) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO extra (id_reserva, id_insumo, precio) VALUES (?, ?, ?)";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, extra.getId_reserva());
-            ps.setString(2, extra.getDescripcion());
+            ps.setInt(2, extra.getId_insumo());
             ps.setDouble(3, extra.getPrecio());
             ps.executeUpdate();
             ps.close();
@@ -61,12 +61,12 @@ public class ExtraDaoImpl implements ExtraDao{
 
     @Override
     public void actualizar(Extra extra) {
-        String sql = "UPDATE extra SET id_reserva = ?, descripcion = ?, precio = ? WHERE id = ?";
+        String sql = "UPDATE extra SET id_reserva = ?, id_insumo = ?, precio = ? WHERE id = ?";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, extra.getId_reserva());
-            ps.setString(2, extra.getDescripcion());
+            ps.setInt(2, extra.getId_insumo());
             ps.setDouble(3, extra.getPrecio());
             ps.setInt(4, extra.getId());
             ps.execute();
@@ -105,7 +105,7 @@ public class ExtraDaoImpl implements ExtraDao{
                 extra = new Extra();
                 extra.setId(rs.getInt("id"));
                 extra.setId_reserva(rs.getInt("id_reserva"));
-                extra.setDescripcion(rs.getString("descripcion"));
+                extra.setId_insumo(rs.getInt("id_insumo"));
                 extra.setPrecio(rs.getDouble("precio"));
             }
             rs.close();

@@ -5,23 +5,23 @@ package com.hotel.modelo;
 public class Extra {
     private int id;
     private int id_reserva;
-    private String descripcion;
+    private int id_insumo;
     private double precio;
 
-    public Extra(int id, int id_reserva, String descripcion, double precio) {
+    public Extra() {
+    }
+
+    public Extra(int id_reserva,int id_insumo, double precio) {
+        this.id_reserva = id_reserva;
+        this.id_insumo = id_insumo;
+        this.precio = precio;
+    }
+
+    public Extra(int id, int id_reserva,int id_insumo, double precio) {
         this.id = id;
         this.id_reserva = id_reserva;
-        this.descripcion = descripcion;
+        this.id_insumo = id_insumo;
         this.precio = precio;
-    }
-
-    public Extra(int id_reserva, String descripcion, double precio) {
-        this.id_reserva = id_reserva;
-        this.descripcion = descripcion;
-        this.precio = precio;
-    }
-
-    public Extra() {
     }
 
     public int getId() {
@@ -39,13 +39,13 @@ public class Extra {
     public void setId_reserva(int id_reserva) {
         this.id_reserva = id_reserva;
     }
-
-    public String getDescripcion() {
-        return descripcion;
+    
+     public int getId_insumo() {
+        return id_insumo;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setId_insumo(int id_insumo) {
+        this.id_insumo = id_insumo;
     }
 
     public double getPrecio() {
@@ -55,6 +55,9 @@ public class Extra {
     public void setPrecio(double precio) {
         this.precio = precio;
     }
+    
+    
+
     
     
 }

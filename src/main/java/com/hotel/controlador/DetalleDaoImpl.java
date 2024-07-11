@@ -1,4 +1,3 @@
-
 package com.hotel.controlador;
 
 import com.hotel.modelo.Detalle;
@@ -8,11 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+public class DetalleDaoImpl implements DetalleDao {
 
-public class DetalleDaoImpl implements DetalleDao{
-   
     private Connection conn;
     private PreparedStatement ps;
     private ResultSet rs;
@@ -46,7 +45,7 @@ public class DetalleDaoImpl implements DetalleDao{
 
     @Override
     public void registrar(Detalle detalle) {
-        String sql = "INSERT INTO detalle (id_habitacion, id_reserva, id_metodoPago, precioTotal) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO detalle (id_habitacion, id_reserva, id_metodoPago, precio_total) VALUES (?, ?, ?, ?)";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
@@ -65,7 +64,7 @@ public class DetalleDaoImpl implements DetalleDao{
 
     @Override
     public void actualizar(Detalle detalle) {
-        String sql = "UPDATE detalle SET id_habitacion = ?, id_reserva = ?, id_metodoPago = ?, precioTotal = ? WHERE id = ?";
+        String sql = "UPDATE detalle SET id_habitacion = ?, id_reserva = ?, id_metodoPago = ?, precio_total = ? WHERE id = ?";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
@@ -112,7 +111,7 @@ public class DetalleDaoImpl implements DetalleDao{
                 detalle.setId_habitacion(rs.getInt("id_habitacion"));
                 detalle.setId_reserva(rs.getInt("id_reserva"));
                 detalle.setId_metodoPago(rs.getInt("id_metodoPago"));
-                detalle.setPrecioTotal(rs.getDouble("precioTotal"));
+                detalle.setPrecioTotal(rs.getDouble("precio_total"));
             }
             rs.close();
             ps.close();
@@ -122,5 +121,73 @@ public class DetalleDaoImpl implements DetalleDao{
             Conexion.cerrar();
         }
         return detalle;
+    }
+
+    @Override
+    public int buscarPoridHbaitacion(int idHabitacion) {
+        int idDetalle = -1; // Valor por defecto si no se encuentra un registro
+        String sql = "SELECT id FROM detalle WHERE id_habitacion = ?";
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, idHabitacion); // Establecer el parámetro en la consulta
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                idDetalle = rs.getInt("id");
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+        return idDetalle;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> listarDetalle() {
+        String sql = "SELECT d.id, hab.numero AS \"N° habitacion\", h.nombre AS Cliente, r.fecha_reserva, r.fecha_salida, d.precio_total "
+                + "FROM detalle d "
+                + "JOIN reserva r ON d.id_reserva = r.id "
+                + "JOIN huesped h ON r.id_huesped = h.id "
+                + "JOIN habitacion hab ON d.id_habitacion = hab.id";
+
+        List<HashMap<String, Object>> lista = new ArrayList<>();
+        try {
+            conn = Conexion.conectar(); // Establecer la conexión
+            ps = conn.prepareStatement(sql); // Preparar la consulta
+            rs = ps.executeQuery(); // Ejecutar la consulta
+            while (rs.next()) {
+                HashMap<String, Object> map = new HashMap<>();
+
+                map.put("id", rs.getInt("id"));
+                map.put("N° habitacion", rs.getString("N° habitacion"));
+                map.put("Cliente", rs.getString("Cliente"));
+                map.put("fecha_reserva", rs.getDate("fecha_reserva"));
+                map.put("fecha_salida", rs.getDate("fecha_salida"));
+                map.put("precio_total", rs.getBigDecimal("precio_total"));
+
+                lista.add(map);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close(); // Cerrar ResultSet
+                }
+                if (ps != null) {
+                    ps.close(); // Cerrar PreparedStatement
+                }
+                if (conn != null) {
+                    Conexion.cerrar(); // Cerrar conexión
+                }
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar la conexión: " + e);
+            }
+        }
+        return lista;
+
     }
 }

@@ -121,4 +121,31 @@ public class HuespedDaoImpl implements HuespedDao {
         }
         return huesped;
     }
+
+    @Override
+    public Huesped BuscarPorDni(String dni) {
+         Huesped huesped = null;
+        String sql = "SELECT * FROM huesped WHERE documento = ?";
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, dni);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                huesped = new Huesped();
+                huesped.setId(rs.getInt("id"));
+                huesped.setNombre(rs.getString("nombre"));
+                huesped.setDocumento(rs.getString("documento"));
+                huesped.setTelefono(rs.getString("telefono"));
+                huesped.setCorreo(rs.getString("correo"));
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+        return huesped; 
+    }
 }

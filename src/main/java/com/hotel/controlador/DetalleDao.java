@@ -2,6 +2,7 @@
 package com.hotel.controlador;
 
 import com.hotel.modelo.Detalle;
+import java.util.HashMap;
 import java.util.List;
 
 public interface DetalleDao {
@@ -10,4 +11,6 @@ public interface DetalleDao {
     public void actualizar(Detalle detalle);
     public void borrar(int id);
     public Detalle buscarPorId(int id);
+    public int buscarPoridHbaitacion(int idHabitacion);
+    public List<HashMap<String, Object>> listarDetalle();
 }
