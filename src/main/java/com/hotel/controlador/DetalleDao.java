@@ -13,4 +13,6 @@ public interface DetalleDao {
     public Detalle buscarPorId(int id);
     public int buscarPoridHbaitacion(int idHabitacion);
     public List<HashMap<String, Object>> listarDetalle();
+    public void actualizarPrecio (int idDetalle, double precio);
+    public void convertSaleToPDF(int idDetalle ,String nomUusario, String fecharegistro ,int idcliente  , int idregistro , double total , String tipo_pago);
 }

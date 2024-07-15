@@ -12,4 +12,6 @@ public interface HuespedDao {
     public void borrar(int id);
     public Huesped buscarPorId(int id);
     public Huesped BuscarPorDni(String dni);
+    public List<Huesped> BuscarPorNombre(String nombre);
+   public boolean documentoDuplicado(String documento);
 }

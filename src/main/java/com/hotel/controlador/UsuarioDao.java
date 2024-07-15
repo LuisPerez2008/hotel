@@ -12,4 +12,7 @@ public interface UsuarioDao {
     public void borrar(int id);
     public Usuario buscarPorId(int id);
     public Usuario iniciarSesion(String correo, String pass);
+    public String buscarNombreUsuarioXidDetalle(int idDetalle);
+    public List<Usuario> BuscarPorNombre(String nombre);
+    
 }

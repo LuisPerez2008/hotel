@@ -11,4 +11,7 @@ public interface ExtraDao {
     public void actualizar(Extra extra);
     public void borrar(int id);
     public Extra buscarPorId(int id);
+    public int obtenerIdReservaXidHbaitacion(int id);
+    
+    public double sumaDeextrasXdetalle(int id);
 }

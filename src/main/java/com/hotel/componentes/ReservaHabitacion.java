@@ -8,15 +8,23 @@ import com.hotel.controlador.DetalleDao;
 import com.hotel.controlador.DetalleDaoImpl;
 import com.hotel.controlador.HabitacionDao;
 import com.hotel.controlador.HabitacionDaoImpl;
+import com.hotel.controlador.HuespedDao;
+import com.hotel.controlador.HuespedDaoImpl;
 import com.hotel.controlador.ReservaDao;
 import com.hotel.controlador.ReservaDaoImpl;
+import com.hotel.controlador.UsuarioDao;
+import com.hotel.controlador.UsuarioDaoImpl;
 import com.hotel.modelo.Detalle;
 import com.hotel.modelo.Habitacion;
+import com.hotel.modelo.Huesped;
+import com.hotel.modelo.Reserva;
 import com.hotel.modelo.Usuario;
 import com.hotel.utils.ReporteExcel;
+import com.hotel.vista.Correos;
 import com.hotel.vista.ExtrasView;
 import com.hotel.vista.ReservaEditar;
 import com.hotel.vista.ReservaVista;
+import com.sun.net.httpserver.Authenticator;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -25,10 +33,13 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import javax.swing.BorderFactory;
 
 import javax.swing.JButton;
@@ -54,6 +65,9 @@ public class ReservaHabitacion extends javax.swing.JPanel {
     ReservaDao reservaDao = new ReservaDaoImpl();
     DetalleDao detalleDao = new DetalleDaoImpl();
     DefaultTableModel model = new DefaultTableModel();
+    boolean verfiltros = true;
+    UsuarioDao usuarioDao = new UsuarioDaoImpl();
+    HuespedDao huespedDao = new HuespedDaoImpl();
 
     /**
      * Creates new form ReservaHabitacion
@@ -75,7 +89,7 @@ public class ReservaHabitacion extends javax.swing.JPanel {
         txtNombreUsuario.setVisible(false);
         user3 = user;
         verHabitaciones();
-        
+
     }
 
     public void iniciarpaneles() {
@@ -95,6 +109,11 @@ public class ReservaHabitacion extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2estado = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
         btnActualizar = new javax.swing.JButton();
         txtNombreUsuario = new javax.swing.JTextField();
         btnRegistrosReserva = new javax.swing.JButton();
@@ -107,7 +126,48 @@ public class ReservaHabitacion extends javax.swing.JPanel {
         tablaReservas = new javax.swing.JTable();
         btnEditarRegistroReserva = new javax.swing.JButton();
         btnExel = new javax.swing.JButton();
+        btnPDF = new javax.swing.JButton();
+        btnEnviarCorreo = new javax.swing.JButton();
+        btnFiltroBuscar = new javax.swing.JButton();
+        cbxEstado = new javax.swing.JComboBox<>();
+        btnBucarXpiso = new javax.swing.JButton();
+        btnBuscarxEstado = new javax.swing.JButton();
+        cbxPiso = new javax.swing.JComboBox<>();
+        jLabelpiso = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
+        jTextField1.setText("jTextField1");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 88, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 26, Short.MAX_VALUE)
+        );
+
+        jLabel2estado.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2estado.setText("Estado:");
+
+        jLabel2.setText("jLabel2");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 27, Short.MAX_VALUE)
+        );
+
+        btnActualizar.setBackground(new java.awt.Color(43, 113, 140));
+        btnActualizar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
         btnActualizar.setText("Ver Habitaciones");
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -115,19 +175,25 @@ public class ReservaHabitacion extends javax.swing.JPanel {
             }
         });
 
-        btnRegistrosReserva.setText("Registros");
+        btnRegistrosReserva.setBackground(new java.awt.Color(43, 113, 140));
+        btnRegistrosReserva.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegistrosReserva.setForeground(new java.awt.Color(255, 255, 255));
+        btnRegistrosReserva.setText("Historia de registros");
         btnRegistrosReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistrosReservaActionPerformed(evt);
             }
         });
 
+        jTabbedPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTabbedPane1.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+
         Contenedor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Contenedor.setMinimumSize(new java.awt.Dimension(100, 100));
         Contenedor.setLayout(new java.awt.GridLayout(3, 0, 5, 5));
         jScrollPane1.setViewportView(Contenedor);
 
-        jTabbedPane1.addTab("tab1", jScrollPane1);
+        jTabbedPane1.addTab("", jScrollPane1);
 
         tablaReservas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -144,6 +210,7 @@ public class ReservaHabitacion extends javax.swing.JPanel {
             tablaReservas.getColumnModel().getColumn(0).setMaxWidth(75);
         }
 
+        btnEditarRegistroReserva.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\editar.png")); // NOI18N
         btnEditarRegistroReserva.setText("Editar");
         btnEditarRegistroReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,10 +218,27 @@ public class ReservaHabitacion extends javax.swing.JPanel {
             }
         });
 
+        btnExel.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\exel.png")); // NOI18N
         btnExel.setText("Reporte");
         btnExel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExelActionPerformed(evt);
+            }
+        });
+
+        btnPDF.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\pdf-2.png")); // NOI18N
+        btnPDF.setText("Boleta");
+        btnPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPDFActionPerformed(evt);
+            }
+        });
+
+        btnEnviarCorreo.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\correo.png")); // NOI18N
+        btnEnviarCorreo.setText("Eviar Correo");
+        btnEnviarCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarCorreoActionPerformed(evt);
             }
         });
 
@@ -163,27 +247,34 @@ public class ReservaHabitacion extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnExel, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(btnPDF)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnExel))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 779, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnEditarRegistroReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 779, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(btnEditarRegistroReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEnviarCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(btnExel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnExel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPDF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(btnEditarRegistroReserva)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEditarRegistroReserva)
+                    .addComponent(btnEnviarCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(62, 62, 62))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -197,42 +288,119 @@ public class ReservaHabitacion extends javax.swing.JPanel {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("tab2", jPanel1);
+        jTabbedPane1.addTab("", jPanel1);
+
+        btnFiltroBuscar.setText("BUSCAR");
+        btnFiltroBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFiltroBuscarActionPerformed(evt);
+            }
+        });
+
+        cbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Libre", "Ocupado", "Reservado" }));
+
+        btnBucarXpiso.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\buscar-2.png")); // NOI18N
+        btnBucarXpiso.setBorder(null);
+        btnBucarXpiso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBucarXpisoActionPerformed(evt);
+            }
+        });
+
+        btnBuscarxEstado.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\buscar-2.png")); // NOI18N
+        btnBuscarxEstado.setBorder(null);
+        btnBuscarxEstado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarxEstadoActionPerformed(evt);
+            }
+        });
+
+        cbxPiso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Piso 1", "Piso 2", "Piso 3", "piso 4", "piso 5" }));
+
+        jLabelpiso.setText("PISO:");
+
+        jLabel1.setText("ESTADO: ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
-                    .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegistrosReserva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                                .addComponent(btnRegistrosReserva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabelpiso, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbxPiso, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBucarXpiso, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscarxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(122, 122, 122)
+                        .addComponent(btnFiltroBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(199, 199, 199)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(24, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(cbxPiso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabelpiso)
+                                            .addComponent(btnFiltroBuscar))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel1))
+                                        .addComponent(btnBucarXpiso, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(btnBuscarxEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
                         .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
-                        .addComponent(btnRegistrosReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                        .addComponent(btnRegistrosReserva, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(75, 75, 75))
         );
+
+        jTabbedPane1.getAccessibleContext().setAccessibleName("");
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:
         jTabbedPane1.setSelectedIndex(0);
+        if (verfiltros) {
+            jLabelpiso.setVisible(true);
+            jLabel2estado.setVisible(true);
+            cbxEstado.setVisible(true);
+            cbxPiso.setVisible(true);
+            btnBucarXpiso.setVisible(true);
+            btnBuscarxEstado.setVisible(true);
+            btnFiltroBuscar.setVisible(true);
+        }
         verHabitaciones();
 
     }//GEN-LAST:event_btnActualizarActionPerformed
@@ -247,6 +415,7 @@ public class ReservaHabitacion extends javax.swing.JPanel {
         paneles.clear();
         // Agregar un JLabel por cada habitación
         for (Habitacion habitacion : habitaciones) {
+
             JPanel buttonPanel = new JPanel(new FlowLayout());
             JPanel panel = new JPanel(new BorderLayout());
             Font font = new Font("Arial", Font.BOLD, 17);
@@ -262,15 +431,18 @@ public class ReservaHabitacion extends javax.swing.JPanel {
                 public void actionPerformed(ActionEvent e) {
                     ReservaVista resVista = new ReservaVista(habitacion, user3);
                     resVista.setVisible(true);
+
                 }
             });
             // Cambiar color del texto y fondo según el estado
             switch (habitacion.getEstado()) {
                 case '1':
+
                     label.setForeground(Color.BLACK);
                     label.setBackground(Color.GREEN);
                     break;
                 case '2':
+
                     estaOcuapado = false;
                     int id_detalle = detalleDao.buscarPoridHbaitacion(habitacion.getId());
                     Date fechaSalida = reservaDao.obtenerfechaSalida(id_detalle);
@@ -285,7 +457,7 @@ public class ReservaHabitacion extends javax.swing.JPanel {
                             button2.addActionListener(new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
-                                    ExtrasView estExtrasView = new ExtrasView();
+                                    ExtrasView estExtrasView = new ExtrasView(habitacion);
                                     estExtrasView.setVisible(true);
                                 }
                             });
@@ -300,10 +472,42 @@ public class ReservaHabitacion extends javax.swing.JPanel {
 
                                 public void actionPerformed(ActionEvent e) {
                                     habitacionDao.cambiarEstado(habitacion.getId(), estado);
+                                    verHabitaciones2();
                                 }
                             });
                         }
                     }
+                    break;
+                case '3':
+                    estaOcuapado = false;
+
+                    int id_detalles = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaEntrada = reservaDao.obtenerfechaEntrada(id_detalles);
+                    Date fechaSalidas = reservaDao.obtenerfechaSalida(id_detalles);
+                    if (fechaEntrada != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaActual = new Date();
+
+                        if (sdf.format(fechaEntrada).equals(sdf.format(fechaActual)) || fechaEntrada.before(fechaActual)) {
+                            char estadito = '2';
+                            habitacionDao.cambiarEstado(habitacion.getId(), estadito);
+                            verHabitaciones2();
+                        } else {
+
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.BLUE);
+                            JButton button4 = new JButton("Ver");
+                            buttonPanel.add(button4);
+                            button4.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+
+                                    JOptionPane.showMessageDialog(null, "Fecha de Entrada: " + fechaEntrada + "\n Fecha de Salida: " + fechaSalidas);
+                                }
+                            });
+                        }
+                    }
+
                     break;
                 default:
                     label.setForeground(Color.WHITE);
@@ -321,9 +525,9 @@ public class ReservaHabitacion extends javax.swing.JPanel {
 
             panel.add(label, BorderLayout.CENTER);
             panel.add(buttonPanel, BorderLayout.PAGE_END);
+
             //panel.add(button, BorderLayout.PAGE_END);
             //panel.add(button2, BorderLayout.PAGE_END);
-
             Contenedor.add(panel);
             labels.add(label);
             botones.add(button);
@@ -374,6 +578,16 @@ public class ReservaHabitacion extends javax.swing.JPanel {
     private void btnRegistrosReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrosReservaActionPerformed
         jTabbedPane1.setSelectedIndex(1);
         llenarTabla();
+        if (verfiltros) {
+            jLabelpiso.setVisible(false);
+            jLabel2estado.setVisible(false);
+            cbxEstado.setVisible(false);
+            cbxPiso.setVisible(false);
+            btnBucarXpiso.setVisible(false);
+            btnBuscarxEstado.setVisible(false);
+            btnFiltroBuscar.setVisible(false);
+        }
+
 
     }//GEN-LAST:event_btnRegistrosReservaActionPerformed
 
@@ -401,10 +615,458 @@ public class ReservaHabitacion extends javax.swing.JPanel {
             }
         } else {
             JOptionPane.showMessageDialog(null, "Seleccione una fila");
-        } 
+        }
 
 
     }//GEN-LAST:event_btnEditarRegistroReservaActionPerformed
+
+    private void btnFiltroBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltroBuscarActionPerformed
+        char estados = String.valueOf(cbxEstado.getSelectedIndex() + 1).charAt(0);
+        String piso = String.valueOf((cbxPiso.getSelectedIndex() + 1));
+
+        List<Habitacion> habitaciones = habitacionDao.buscarPorEstadoyPiso(piso, estados);
+
+        // Limpiar el contenedor antes de agregar nuevos labels
+        Contenedor.removeAll();
+        labels.clear();
+        paneles.clear();
+        // Agregar un JLabel por cada habitación
+        for (Habitacion habitacion : habitaciones) {
+
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            JPanel panel = new JPanel(new BorderLayout());
+            Font font = new Font("Arial", Font.BOLD, 17);
+            Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+            panel.setBorder(border);
+            JLabel label = new JLabel(cambio2(habitacion));
+            label.setFont(font);
+            boolean estaOcuapado = true;
+
+            JButton button = new JButton(cambioEstado(habitacion));
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    ReservaVista resVista = new ReservaVista(habitacion, user3);
+                    resVista.setVisible(true);
+
+                }
+            });
+            // Cambiar color del texto y fondo según el estado
+            switch (habitacion.getEstado()) {
+                case '1':
+
+                    label.setForeground(Color.BLACK);
+                    label.setBackground(Color.GREEN);
+                    break;
+                case '2':
+
+                    estaOcuapado = false;
+                    int id_detalle = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaSalida = reservaDao.obtenerfechaSalida(id_detalle);
+                    if (fechaSalida != null) {
+                        Date fechaActual = new Date(); // Obtener la fecha actual
+
+                        if (fechaSalida.after(fechaActual)) {
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.RED);
+                            JButton button2 = new JButton("Extras");
+                            buttonPanel.add(button2);
+                            button2.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    ExtrasView estExtrasView = new ExtrasView(habitacion);
+                                    estExtrasView.setVisible(true);
+                                }
+                            });
+
+                        } else {
+                            char estado = '1';
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.YELLOW);
+                            JButton button3 = new JButton("Habilitar");
+                            buttonPanel.add(button3);
+                            button3.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    habitacionDao.cambiarEstado(habitacion.getId(), estado);
+                                    verHabitaciones2();
+                                }
+                            });
+                        }
+                    }
+                    break;
+                case '3':
+                    estaOcuapado = false;
+
+                    int id_detalles = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaEntrada = reservaDao.obtenerfechaEntrada(id_detalles);
+                    Date fechaSalidas = reservaDao.obtenerfechaSalida(id_detalles);
+                    if (fechaEntrada != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaActual = new Date();
+
+                        if (sdf.format(fechaEntrada).equals(sdf.format(fechaActual)) || fechaEntrada.before(fechaActual)) {
+                            char estadito = '2';
+                            habitacionDao.cambiarEstado(habitacion.getId(), estadito);
+                            verHabitaciones2();
+                        } else {
+
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.BLUE);
+                            JButton button4 = new JButton("Ver");
+                            buttonPanel.add(button4);
+                            button4.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+
+                                    JOptionPane.showMessageDialog(null, "Fecha de Entrada: " + fechaEntrada + "\n Fecha de Salida: " + fechaSalidas);
+                                }
+                            });
+                        }
+                    }
+
+                    break;
+                default:
+                    label.setForeground(Color.WHITE);
+                    label.setBackground(Color.BLUE);
+                    break;
+            }
+
+            label.setOpaque(true);
+
+            buttonPanel.add(button);
+
+            if (!estaOcuapado) {
+                buttonPanel.remove(button);
+            }
+
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(buttonPanel, BorderLayout.PAGE_END);
+
+            //panel.add(button, BorderLayout.PAGE_END);
+            //panel.add(button2, BorderLayout.PAGE_END);
+            Contenedor.add(panel);
+            labels.add(label);
+            botones.add(button);
+            paneles.add(panel);
+
+        }
+        Contenedor.updateUI();
+    }//GEN-LAST:event_btnFiltroBuscarActionPerformed
+
+    private void btnBucarXpisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBucarXpisoActionPerformed
+        String piso = String.valueOf((cbxPiso.getSelectedIndex() + 1));
+        List<Habitacion> habitaciones = habitacionDao.buscarPorPiso(piso);
+
+        // Limpiar el contenedor antes de agregar nuevos labels
+        Contenedor.removeAll();
+        labels.clear();
+        paneles.clear();
+        // Agregar un JLabel por cada habitación
+        for (Habitacion habitacion : habitaciones) {
+
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            JPanel panel = new JPanel(new BorderLayout());
+            Font font = new Font("Arial", Font.BOLD, 17);
+            Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+            panel.setBorder(border);
+            JLabel label = new JLabel(cambio2(habitacion));
+            label.setFont(font);
+            boolean estaOcuapado = true;
+
+            JButton button = new JButton(cambioEstado(habitacion));
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    ReservaVista resVista = new ReservaVista(habitacion, user3);
+                    resVista.setVisible(true);
+
+                }
+            });
+            // Cambiar color del texto y fondo según el estado
+            switch (habitacion.getEstado()) {
+                case '1':
+
+                    label.setForeground(Color.BLACK);
+                    label.setBackground(Color.GREEN);
+                    break;
+                case '2':
+
+                    estaOcuapado = false;
+                    int id_detalle = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaSalida = reservaDao.obtenerfechaSalida(id_detalle);
+                    if (fechaSalida != null) {
+                        Date fechaActual = new Date(); // Obtener la fecha actual
+
+                        if (fechaSalida.after(fechaActual)) {
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.RED);
+                            JButton button2 = new JButton("Extras");
+                            buttonPanel.add(button2);
+                            button2.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    ExtrasView estExtrasView = new ExtrasView(habitacion);
+                                    estExtrasView.setVisible(true);
+                                }
+                            });
+
+                        } else {
+                            char estado = '1';
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.YELLOW);
+                            JButton button3 = new JButton("Habilitar");
+                            buttonPanel.add(button3);
+                            button3.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    habitacionDao.cambiarEstado(habitacion.getId(), estado);
+                                    verHabitaciones2();
+                                }
+                            });
+                        }
+                    }
+                    break;
+                case '3':
+                    estaOcuapado = false;
+
+                    int id_detalles = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaEntrada = reservaDao.obtenerfechaEntrada(id_detalles);
+                    Date fechaSalidas = reservaDao.obtenerfechaSalida(id_detalles);
+                    if (fechaEntrada != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaActual = new Date();
+
+                        if (sdf.format(fechaEntrada).equals(sdf.format(fechaActual)) || fechaEntrada.before(fechaActual)) {
+                            char estadito = '2';
+                            habitacionDao.cambiarEstado(habitacion.getId(), estadito);
+                            verHabitaciones2();
+                        } else {
+
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.BLUE);
+                            JButton button4 = new JButton("Ver");
+                            buttonPanel.add(button4);
+                            button4.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+
+                                    JOptionPane.showMessageDialog(null, "Fecha de Entrada: " + fechaEntrada + "\n Fecha de Salida: " + fechaSalidas);
+                                }
+                            });
+                        }
+                    }
+
+                    break;
+                default:
+                    label.setForeground(Color.WHITE);
+                    label.setBackground(Color.BLUE);
+                    break;
+            }
+
+            label.setOpaque(true);
+
+            buttonPanel.add(button);
+
+            if (!estaOcuapado) {
+                buttonPanel.remove(button);
+            }
+
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(buttonPanel, BorderLayout.PAGE_END);
+
+            //panel.add(button, BorderLayout.PAGE_END);
+            //panel.add(button2, BorderLayout.PAGE_END);
+            Contenedor.add(panel);
+            labels.add(label);
+            botones.add(button);
+            paneles.add(panel);
+
+        }
+        Contenedor.updateUI();
+    }//GEN-LAST:event_btnBucarXpisoActionPerformed
+
+    private void btnBuscarxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarxEstadoActionPerformed
+        char estados = String.valueOf(cbxEstado.getSelectedIndex() + 1).charAt(0);
+        System.out.println(estados);
+        List<Habitacion> habitaciones = habitacionDao.buscarPorEstado(estados);
+
+        // Limpiar el contenedor antes de agregar nuevos labels
+        Contenedor.removeAll();
+        labels.clear();
+        paneles.clear();
+        // Agregar un JLabel por cada habitación
+        for (Habitacion habitacion : habitaciones) {
+
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            JPanel panel = new JPanel(new BorderLayout());
+            Font font = new Font("Arial", Font.BOLD, 17);
+            Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+            panel.setBorder(border);
+            JLabel label = new JLabel(cambio2(habitacion));
+            label.setFont(font);
+            boolean estaOcuapado = true;
+
+            JButton button = new JButton(cambioEstado(habitacion));
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    ReservaVista resVista = new ReservaVista(habitacion, user3);
+                    resVista.setVisible(true);
+
+                }
+            });
+            // Cambiar color del texto y fondo según el estado
+            switch (habitacion.getEstado()) {
+                case '1':
+
+                    label.setForeground(Color.BLACK);
+                    label.setBackground(Color.GREEN);
+                    break;
+                case '2':
+
+                    estaOcuapado = false;
+                    int id_detalle = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaSalida = reservaDao.obtenerfechaSalida(id_detalle);
+                    if (fechaSalida != null) {
+                        Date fechaActual = new Date(); // Obtener la fecha actual
+
+                        if (fechaSalida.after(fechaActual)) {
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.RED);
+                            JButton button2 = new JButton("Extras");
+                            buttonPanel.add(button2);
+                            button2.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    ExtrasView estExtrasView = new ExtrasView(habitacion);
+                                    estExtrasView.setVisible(true);
+                                }
+                            });
+
+                        } else {
+                            char estado = '1';
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.YELLOW);
+                            JButton button3 = new JButton("Habilitar");
+                            buttonPanel.add(button3);
+                            button3.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    habitacionDao.cambiarEstado(habitacion.getId(), estado);
+                                    verHabitaciones2();
+                                }
+                            });
+                        }
+                    }
+                    break;
+                case '3':
+                    estaOcuapado = false;
+
+                    int id_detalles = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaEntrada = reservaDao.obtenerfechaEntrada(id_detalles);
+                    Date fechaSalidas = reservaDao.obtenerfechaSalida(id_detalles);
+                    if (fechaEntrada != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaActual = new Date();
+
+                        if (sdf.format(fechaEntrada).equals(sdf.format(fechaActual)) || fechaEntrada.before(fechaActual)) {
+                            char estadito = '2';
+                            habitacionDao.cambiarEstado(habitacion.getId(), estadito);
+                            verHabitaciones2();
+                        } else {
+
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.BLUE);
+                            JButton button4 = new JButton("Ver");
+                            buttonPanel.add(button4);
+                            button4.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+
+                                    JOptionPane.showMessageDialog(null, "Fecha de Entrada: " + fechaEntrada + "\n Fecha de Salida: " + fechaSalidas);
+                                }
+                            });
+                        }
+                    }
+
+                    break;
+                default:
+                    label.setForeground(Color.WHITE);
+                    label.setBackground(Color.BLUE);
+                    break;
+            }
+
+            label.setOpaque(true);
+
+            buttonPanel.add(button);
+
+            if (!estaOcuapado) {
+                buttonPanel.remove(button);
+            }
+
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(buttonPanel, BorderLayout.PAGE_END);
+
+            //panel.add(button, BorderLayout.PAGE_END);
+            //panel.add(button2, BorderLayout.PAGE_END);
+            Contenedor.add(panel);
+            labels.add(label);
+            botones.add(button);
+            paneles.add(panel);
+
+        }
+        Contenedor.updateUI();
+    }//GEN-LAST:event_btnBuscarxEstadoActionPerformed
+
+    private void btnPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPDFActionPerformed
+
+        int fila = tablaReservas.getSelectedRow();
+        if (fila != -1) { // Verifica si se ha seleccionado una fila
+            int id_detalle = (int) tablaReservas.getValueAt(fila, 0);
+            Detalle det = detalleDao.buscarPorId(id_detalle);
+            String nombreUsuario = usuarioDao.buscarNombreUsuarioXidDetalle(det.getId());
+            String fecha = String.valueOf(reservaDao.obtenerfechaEntrada(det.getId()));
+            String metodoPago = "";
+            if (det.getId_metodoPago() == 1) {
+                metodoPago = "Billetera Dijital";
+            } else if (det.getId_metodoPago() == 2) {
+                metodoPago = "Tarjeta";
+            } else {
+                metodoPago = "Efectivo";
+            }
+            int id_reserva = det.getId_reserva();
+            Reserva res = reservaDao.buscarPorId(id_reserva);
+            Huesped hues = huespedDao.buscarPorId(res.getId_huesped());
+            double total = det.getPrecioTotal();
+
+            detalleDao.convertSaleToPDF(det.getId(), nombreUsuario, fecha, hues.getId(), id_reserva, total, metodoPago);
+        } else {
+
+            JOptionPane.showMessageDialog(null, "Selecione un registro");
+        }
+
+
+    }//GEN-LAST:event_btnPDFActionPerformed
+
+    private void btnEnviarCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarCorreoActionPerformed
+        int fila = tablaReservas.getSelectedRow();
+
+        if (fila != -1) { // Verifica si se ha seleccionado una fila
+            int id_detalle = (int) tablaReservas.getValueAt(fila, 0);
+            Detalle det = detalleDao.buscarPorId(id_detalle);
+            Reserva res = reservaDao.buscarPorId(det.getId_reserva());
+            Huesped hues = huespedDao.buscarPorId(res.getId_huesped());
+            String nombre = hues.getNombre();
+            String corr = hues.getCorreo();
+            int numeroFolio = det.getId();
+            Correos correo = new Correos(nombre, corr, numeroFolio);
+            correo.setVisible(true);
+        } else {
+
+            JOptionPane.showMessageDialog(null, "Selecione un registro");
+        }
+    }//GEN-LAST:event_btnEnviarCorreoActionPerformed
 
     public void llenarTabla() {
         List<HashMap<String, Object>> lista = new ArrayList<>();
@@ -428,18 +1090,160 @@ public class ReservaHabitacion extends javax.swing.JPanel {
 
     }
 
+    private void verHabitaciones2() {
 
+        List<Habitacion> habitaciones = habitacionDao.listar();
+
+        // Limpiar el contenedor antes de agregar nuevos labels
+        Contenedor.removeAll();
+        labels.clear();
+        paneles.clear();
+        // Agregar un JLabel por cada habitación
+        for (Habitacion habitacion : habitaciones) {
+
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            JPanel panel = new JPanel(new BorderLayout());
+            Font font = new Font("Arial", Font.BOLD, 17);
+            Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+            panel.setBorder(border);
+            JLabel label = new JLabel(cambio2(habitacion));
+            label.setFont(font);
+            boolean estaOcuapado = true;
+
+            JButton button = new JButton(cambioEstado(habitacion));
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    ReservaVista resVista = new ReservaVista(habitacion, user3);
+                    resVista.setVisible(true);
+
+                }
+            });
+            // Cambiar color del texto y fondo según el estado
+            switch (habitacion.getEstado()) {
+                case '1':
+
+                    label.setForeground(Color.BLACK);
+                    label.setBackground(Color.GREEN);
+                    break;
+                case '2':
+
+                    estaOcuapado = false;
+                    int id_detalle = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaSalida = reservaDao.obtenerfechaSalida(id_detalle);
+                    if (fechaSalida != null) {
+                        Date fechaActual = new Date(); // Obtener la fecha actual
+
+                        if (fechaSalida.after(fechaActual)) {
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.RED);
+                            JButton button2 = new JButton("Extras");
+                            buttonPanel.add(button2);
+                            button2.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    ExtrasView estExtrasView = new ExtrasView(habitacion);
+                                    estExtrasView.setVisible(true);
+                                }
+                            });
+
+                        } else {
+                            char estado = '1';
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.YELLOW);
+                            JButton button3 = new JButton("Habilitar");
+                            buttonPanel.add(button3);
+                            button3.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+                                    habitacionDao.cambiarEstado(habitacion.getId(), estado);
+                                    verHabitaciones2();
+                                }
+                            });
+                        }
+                    }
+                    break;
+                case '3':
+                    estaOcuapado = false;
+
+                    int id_detalles = detalleDao.buscarPoridHbaitacion(habitacion.getId());
+                    Date fechaEntrada = reservaDao.obtenerfechaEntrada(id_detalles);
+                    if (fechaEntrada != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaActual = new Date();
+
+                        if (sdf.format(fechaEntrada).equals(sdf.format(fechaActual))) {
+                            char estadito = '2';
+                            habitacionDao.cambiarEstado(habitacion.getId(), estadito);
+
+                        } else {
+
+                            label.setForeground(Color.WHITE);
+                            label.setBackground(Color.BLUE);
+                            JButton button4 = new JButton("Ver");
+                            buttonPanel.add(button4);
+                            button4.addActionListener(new ActionListener() {
+
+                                public void actionPerformed(ActionEvent e) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    break;
+                default:
+                    label.setForeground(Color.WHITE);
+                    label.setBackground(Color.BLUE);
+                    break;
+            }
+
+            label.setOpaque(true);
+
+            buttonPanel.add(button);
+
+            if (!estaOcuapado) {
+                buttonPanel.remove(button);
+            }
+
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(buttonPanel, BorderLayout.PAGE_END);
+
+            //panel.add(button, BorderLayout.PAGE_END);
+            //panel.add(button2, BorderLayout.PAGE_END);
+            Contenedor.add(panel);
+            labels.add(label);
+            botones.add(button);
+            paneles.add(panel);
+
+        }
+        Contenedor.updateUI();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Contenedor;
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBucarXpiso;
+    private javax.swing.JButton btnBuscarxEstado;
     private javax.swing.JButton btnEditarRegistroReserva;
+    private javax.swing.JButton btnEnviarCorreo;
     private javax.swing.JButton btnExel;
+    private javax.swing.JButton btnFiltroBuscar;
+    private javax.swing.JButton btnPDF;
     private javax.swing.JButton btnRegistrosReserva;
+    private javax.swing.JComboBox<String> cbxEstado;
+    private javax.swing.JComboBox<String> cbxPiso;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel2estado;
+    private javax.swing.JLabel jLabelpiso;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tablaReservas;
     private javax.swing.JTextField txtNombreUsuario;
     // End of variables declaration//GEN-END:variables

@@ -6,6 +6,8 @@ package com.hotel.vista;
 
 import com.hotel.controlador.DetalleDao;
 import com.hotel.controlador.DetalleDaoImpl;
+import com.hotel.controlador.ExtraDao;
+import com.hotel.controlador.ExtraDaoImpl;
 import com.hotel.controlador.HabitacionDao;
 import com.hotel.controlador.HabitacionDaoImpl;
 import com.hotel.controlador.HuespedDao;
@@ -39,6 +41,7 @@ public class ReservaEditar extends javax.swing.JFrame {
     DetalleDao detalleDao = new DetalleDaoImpl();
     DefaultTableModel model = new DefaultTableModel();
     HabitacionDao habitacionDao = new HabitacionDaoImpl();
+    ExtraDao extraDao = new ExtraDaoImpl();
     boolean Eseditar = true;
     /**
      * Creates new form Reserva
@@ -51,7 +54,13 @@ public class ReservaEditar extends javax.swing.JFrame {
     public ReservaEditar(Detalle detalle, Usuario user){
         initComponents();
         setLocationRelativeTo(null);
-        
+        txtIdCliente.setVisible(false);
+        txtIdHabitacion.setVisible(false);
+        txtIdReserva.setVisible(false);
+        txtIdUsuario.setVisible(false);
+        txtIddetalle.setVisible(false);
+        txtFechaFormatoEntrada.setVisible(false);
+        txtFechaFormatoSalida.setVisible(false);
         txtIddetalle.setText(String.valueOf(detalle.getId()));
         txtIdUsuario.setText(String.valueOf(user.getId()));
         txtIdHabitacion.setText(String.valueOf(detalle.getId_habitacion()));
@@ -137,7 +146,11 @@ public class ReservaEditar extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
 
+        jPanel1.setBackground(new java.awt.Color(138, 188, 208));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jPanel2.setBackground(new java.awt.Color(138, 188, 208));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("DETALLE DE HABITACION");
@@ -151,20 +164,25 @@ public class ReservaEditar extends javax.swing.JFrame {
         jLabel5.setText("Precio:");
 
         txtNumhabitacion.setEditable(false);
+        txtNumhabitacion.setBackground(new java.awt.Color(138, 188, 208));
         txtNumhabitacion.setBorder(null);
 
         txtTipoHabitacion.setEditable(false);
+        txtTipoHabitacion.setBackground(new java.awt.Color(138, 188, 208));
         txtTipoHabitacion.setBorder(null);
 
         txtEstado.setEditable(false);
+        txtEstado.setBackground(new java.awt.Color(138, 188, 208));
         txtEstado.setBorder(null);
 
         txtPrecio.setEditable(false);
+        txtPrecio.setBackground(new java.awt.Color(138, 188, 208));
         txtPrecio.setBorder(null);
 
         jLabel10.setText("Piso: ");
 
         txtPiso.setEditable(false);
+        txtPiso.setBackground(new java.awt.Color(138, 188, 208));
         txtPiso.setBorder(null);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -236,6 +254,8 @@ public class ReservaEditar extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
+        jPanel3.setBackground(new java.awt.Color(138, 188, 208));
+
         jLabel6.setText("Cliente: ");
 
         txtDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -253,6 +273,9 @@ public class ReservaEditar extends javax.swing.JFrame {
 
         jLabel9.setText("Doc:");
 
+        btnSalir.setBackground(new java.awt.Color(43, 113, 140));
+        btnSalir.setForeground(new java.awt.Color(255, 255, 255));
+        btnSalir.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\salir.png")); // NOI18N
         btnSalir.setText("SALIR");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,6 +286,9 @@ public class ReservaEditar extends javax.swing.JFrame {
         txtFechaFormatoSalida.setEditable(false);
         txtFechaFormatoSalida.setBorder(null);
 
+        btnConfirmar.setBackground(new java.awt.Color(43, 113, 140));
+        btnConfirmar.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmar.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\mas.png")); // NOI18N
         btnConfirmar.setText("Añadir");
         btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -287,6 +313,9 @@ public class ReservaEditar extends javax.swing.JFrame {
 
         jLabel11.setText("Metodo de pago:");
 
+        btnConfirmarReserva.setBackground(new java.awt.Color(43, 113, 140));
+        btnConfirmarReserva.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmarReserva.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\check.png")); // NOI18N
         btnConfirmarReserva.setText("CONFIRMAR");
         btnConfirmarReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,7 +509,9 @@ public class ReservaEditar extends javax.swing.JFrame {
                 int id_habitacion = Integer.parseInt(txtIdHabitacion.getText());
                 int id_reserva = Integer.parseInt(txtIdReserva.getText());
                 int id_metodopago = (cbxMetodoPago.getSelectedIndex() + 1);
-                double precio_Total = (Double) model.getValueAt(0, 5);
+                double extras = actualizarPrecioDetalle(Integer.parseInt(txtIddetalle.getText()));
+                double precio = (Double) (model.getValueAt(0, 5));
+                double precio_Total = precio + extras;
                 Detalle detalle = new Detalle();
                 detalle.setId(Integer.parseInt(txtIddetalle.getText()));
                 detalle.setId_habitacion(id_habitacion);
@@ -495,11 +526,15 @@ public class ReservaEditar extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Llenar todos los campos", "Aviso", HEIGHT);
         }
 
-        /*
-         *
-         */
+       
     }//GEN-LAST:event_btnConfirmarReservaActionPerformed
-
+    public double actualizarPrecioDetalle(int id){
+        Detalle detall = detalleDao.buscarPorId(id);
+        double precio_extras = extraDao.sumaDeextrasXdetalle(detall.getId());
+        return precio_extras;
+        
+    }
+    
     public void ObtenerFecha() {
         Date date = FechaEntrada.getDate();
         Date date2 = FechaSalida.getDate();

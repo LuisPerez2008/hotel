@@ -18,7 +18,7 @@ public class HuespedDaoImpl implements HuespedDao {
     @Override
     public List<Huesped> listar() {
         List<Huesped> huespedes = new ArrayList();
-        String sql = "SELECT * FROM huesped";
+        String sql = "SELECT * FROM huesped WHERE estado = '1'";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
@@ -63,7 +63,7 @@ public class HuespedDaoImpl implements HuespedDao {
 
     @Override
     public void actualizar(Huesped huesped) {
-        String sql = "UPDATE huesped SET nombre = ?, documento = ?, telefono = ?, correo = ? WHERE id = ?";
+        String sql = "UPDATE huesped SET nombre = ?, documento = ?, telefono = ?, correo = ? , estado = '1' WHERE id = ?";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
@@ -82,15 +82,21 @@ public class HuespedDaoImpl implements HuespedDao {
 
     @Override
     public void borrar(int id) {
-        String sql = "DELETE FROM huesped WHERE id = ?";
+        String sql = "UPDATE huesped SET estado = '2' WHERE id = ?";
+
         try {
+
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
+            ps.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.toString());
+
         } finally {
+
             Conexion.cerrar();
         }
     }
@@ -124,7 +130,7 @@ public class HuespedDaoImpl implements HuespedDao {
 
     @Override
     public Huesped BuscarPorDni(String dni) {
-         Huesped huesped = null;
+        Huesped huesped = null;
         String sql = "SELECT * FROM huesped WHERE documento = ?";
         try {
             conn = Conexion.conectar();
@@ -146,6 +152,57 @@ public class HuespedDaoImpl implements HuespedDao {
         } finally {
             Conexion.cerrar();
         }
-        return huesped; 
+        return huesped;
+    }
+
+    @Override
+    public List<Huesped> BuscarPorNombre(String nombre) {
+        List<Huesped> huespedes = new ArrayList<>();
+        String sql = "SELECT * FROM huesped WHERE nombre LIKE ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + nombre + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Huesped huesped = new Huesped();
+                huesped.setId(rs.getInt("id"));
+                huesped.setNombre(rs.getString("nombre"));
+                huesped.setDocumento(rs.getString("documento"));
+                huesped.setTelefono(rs.getString("telefono"));
+                huesped.setCorreo(rs.getString("correo"));
+
+                huespedes.add(huesped);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return huespedes;
+    }
+
+    @Override
+    public boolean documentoDuplicado(String documento) {
+        String sql = "SELECT COUNT(*) FROM huesped WHERE documento = ?";
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, documento);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Si hay más de 0, es duplicado
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 }

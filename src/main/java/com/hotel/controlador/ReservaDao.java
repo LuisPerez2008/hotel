@@ -15,4 +15,5 @@ public interface ReservaDao {
     public Date obtenerfechaSalida(int idDetalle);
     public Date obtenerfechaEntrada(int idDetalle);
     public String obtenerNombreHuesped(int idReserva);
+    public int obtenerIdDetalleXreserva(int idReserva);
 }

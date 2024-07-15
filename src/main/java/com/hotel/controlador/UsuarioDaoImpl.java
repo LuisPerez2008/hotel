@@ -1,6 +1,4 @@
-
 package com.hotel.controlador;
-
 
 import com.hotel.modelo.Usuario;
 import com.hotel.recursos.Conexion;
@@ -11,15 +9,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioDaoImpl implements UsuarioDao{
+public class UsuarioDaoImpl implements UsuarioDao {
+
     private Connection conn;
     private PreparedStatement ps;
     private ResultSet rs;
 
-     @Override
+    @Override
     public List<Usuario> listar() {
         List<Usuario> usuarios = new ArrayList();
-        String sql = "SELECT * FROM usuario";
+        String sql = "SELECT * FROM usuario WHERE estado = 1";
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
@@ -83,15 +82,21 @@ public class UsuarioDaoImpl implements UsuarioDao{
 
     @Override
     public void borrar(int id) {
-        String sql = "DELETE FROM usuario WHERE id = ?";
+        String sql = "UPDATE usuario SET estado = '2' WHERE id = ?";
+
         try {
+            
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
+            ps.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.toString());
+
         } finally {
+            // Cerrar la conexión
             Conexion.cerrar();
         }
     }
@@ -122,7 +127,7 @@ public class UsuarioDaoImpl implements UsuarioDao{
         }
         return usuario;
     }
-    
+
     @Override
     public Usuario iniciarSesion(String correo, String pass) {
         Usuario user = new Usuario();
@@ -146,6 +151,68 @@ public class UsuarioDaoImpl implements UsuarioDao{
             System.out.println(e.toString());
         }
         return null;
+    }
+
+    @Override
+    public String buscarNombreUsuarioXidDetalle(int idDetalle) {
+        String nombreUsuario = null;
+        String sql = "SELECT u.nombre FROM detalle d "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN usuario u ON u.id = r.id_usuario "
+                + "WHERE d.id = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, idDetalle); // Establecer el parámetro en la consulta
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                nombreUsuario = rs.getString("nombre");
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return nombreUsuario;
+    }
+
+    @Override
+    public List<Usuario> BuscarPorNombre(String nombre) {
+         List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuario WHERE nombre LIKE ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, "%" + nombre + "%"); 
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Usuario user = new Usuario();
+                user.setId(rs.getInt("id"));
+                user.setNombre(rs.getString("nombre"));
+                user.setCorreo(rs.getString("correo"));
+                user.setRol(rs.getString("rol"));
+                
+                
+                usuarios.add(user);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return usuarios;
     }
 
 }

@@ -7,25 +7,36 @@ public class Extra {
     private int id_reserva;
     private int id_insumo;
     private double precio;
+    private double cantidad;
 
     public Extra() {
     }
 
-    public Extra(int id_reserva,int id_insumo, double precio) {
+    public Extra(int id_reserva,int id_insumo, double precio,double cantidad) {
         this.id_reserva = id_reserva;
         this.id_insumo = id_insumo;
         this.precio = precio;
+        this.cantidad = cantidad;
     }
 
-    public Extra(int id, int id_reserva,int id_insumo, double precio) {
+    public Extra(int id, int id_reserva,int id_insumo, double precio, double cantidad) {
         this.id = id;
         this.id_reserva = id_reserva;
         this.id_insumo = id_insumo;
         this.precio = precio;
+        this.cantidad = cantidad;
     }
 
     public int getId() {
         return id;
+    }
+
+    public double getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(double cantidad) {
+        this.cantidad = cantidad;
     }
 
     public void setId(int id) {

@@ -230,4 +230,31 @@ public class ReservaDaoImpl implements ReservaDao {
 
         return nombreHuesped;
     }
+
+    @Override
+    public int obtenerIdDetalleXreserva(int idReserva) {
+        int idDetalle = -1; // Valor predeterminado para indicar que no se encontró un detalle
+        String sql = "SELECT d.id FROM reserva r JOIN detalle d ON r.id = d.id_reserva WHERE r.id = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, idReserva);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                idDetalle = rs.getInt("id");
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return idDetalle;
+
+    }
 }

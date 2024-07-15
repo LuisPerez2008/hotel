@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -40,7 +41,7 @@ public class ReservaVista extends javax.swing.JFrame {
     DetalleDao detalleDao = new DetalleDaoImpl();
     DefaultTableModel model = new DefaultTableModel();
     HabitacionDao habitacionDao = new HabitacionDaoImpl();
-
+    Calendar calendar = Calendar.getInstance();
     /**
      * Creates new form Reserva
      */
@@ -81,6 +82,9 @@ public class ReservaVista extends javax.swing.JFrame {
         FechaEntrada.setDate(date);
         FechaEntrada.setMinSelectableDate(date);
         FechaSalida.setMinSelectableDate(date);
+        txtDocumento.isFocusable();
+        
+      
     }
 
     /**
@@ -133,7 +137,10 @@ public class ReservaVista extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
 
+        jPanel1.setBackground(new java.awt.Color(138, 188, 208));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jPanel2.setBackground(new java.awt.Color(138, 188, 208));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("DETALLE DE HABITACION");
@@ -147,20 +154,25 @@ public class ReservaVista extends javax.swing.JFrame {
         jLabel5.setText("Precio:");
 
         txtNumhabitacion.setEditable(false);
+        txtNumhabitacion.setBackground(new java.awt.Color(138, 188, 208));
         txtNumhabitacion.setBorder(null);
 
         txtTipoHabitacion.setEditable(false);
+        txtTipoHabitacion.setBackground(new java.awt.Color(138, 188, 208));
         txtTipoHabitacion.setBorder(null);
 
         txtEstado.setEditable(false);
+        txtEstado.setBackground(new java.awt.Color(138, 188, 208));
         txtEstado.setBorder(null);
 
         txtPrecio.setEditable(false);
+        txtPrecio.setBackground(new java.awt.Color(138, 188, 208));
         txtPrecio.setBorder(null);
 
         jLabel10.setText("Piso: ");
 
         txtPiso.setEditable(false);
+        txtPiso.setBackground(new java.awt.Color(138, 188, 208));
         txtPiso.setBorder(null);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -225,6 +237,8 @@ public class ReservaVista extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
+        jPanel3.setBackground(new java.awt.Color(138, 188, 208));
+
         jLabel6.setText("Cliente: ");
 
         txtDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -245,6 +259,9 @@ public class ReservaVista extends javax.swing.JFrame {
 
         jLabel9.setText("Doc:");
 
+        btnSalir.setBackground(new java.awt.Color(43, 113, 140));
+        btnSalir.setForeground(new java.awt.Color(255, 255, 255));
+        btnSalir.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\salir.png")); // NOI18N
         btnSalir.setText("SALIR");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,6 +272,9 @@ public class ReservaVista extends javax.swing.JFrame {
         txtFechaFormatoSalida.setEditable(false);
         txtFechaFormatoSalida.setBorder(null);
 
+        btnConfirmar.setBackground(new java.awt.Color(43, 113, 140));
+        btnConfirmar.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmar.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\mas.png")); // NOI18N
         btnConfirmar.setText("Añadir");
         btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -279,6 +299,9 @@ public class ReservaVista extends javax.swing.JFrame {
 
         jLabel11.setText("Metodo de pago:");
 
+        btnConfirmarReserva.setBackground(new java.awt.Color(43, 113, 140));
+        btnConfirmarReserva.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmarReserva.setIcon(new javax.swing.ImageIcon("C:\\Users\\51901\\Documents\\NetBeansProjects\\hotel\\src\\main\\resourses\\check.png")); // NOI18N
         btnConfirmarReserva.setText("CONFIRMAR");
         btnConfirmarReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -452,6 +475,7 @@ public class ReservaVista extends javax.swing.JFrame {
         if (validarceldas()) {
             int pregunta = JOptionPane.showConfirmDialog(null, "Confirmar registro?");
             if (pregunta == 0) {
+                char estado = '0';
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     // Convertir el String a java.util.Date
@@ -463,6 +487,8 @@ public class ReservaVista extends javax.swing.JFrame {
                     reserva.setFecha_reserva(fechaReserva);
                     reserva.setFecha_salida(fechaSalida);
                     reservaDao.registrar(reserva);
+                    estado = cambiarEstado(fechaReserva);
+                    
 
                 } catch (ParseException e) {
                     System.err.println("Error al convertir la fecha: " + e.getMessage());
@@ -480,9 +506,10 @@ public class ReservaVista extends javax.swing.JFrame {
                 detalle.setId_metodoPago(id_metodopago);
                 detalle.setPrecioTotal(precio_Total);
                 detalleDao.registrar(detalle);
-                habitacionDao.cambiarEstado(id_habitacion, '2');
+                habitacionDao.cambiarEstado(id_habitacion, estado);
+                
                 JOptionPane.showMessageDialog(null, "Registrado");
-                setVisible(false);
+                dispose();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Llenar todos los campos", "Aviso", HEIGHT);
@@ -508,7 +535,19 @@ public class ReservaVista extends javax.swing.JFrame {
         txtFechaFormatoSalida.setText(fechaFormateada2);
 
     }
+    
+    public char cambiarEstado(Date fechaReserva){
+        Date date = new Date(); // Fecha actual
+        
+        // Obtener la fecha de mañana
 
+        if (fechaReserva.after(date)) {
+            return '3'; // La fecha de reserva es más de un día después de hoy
+        } else {
+            return '2'; // La fecha de reserva es hoy o antes de mañana
+        }
+    }
+    
     public void llenarTabla() {
         model = (DefaultTableModel) tableReseerva.getModel();
         String num = txtNumhabitacion.getText();

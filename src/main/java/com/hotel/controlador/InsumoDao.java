@@ -11,4 +11,11 @@ public interface InsumoDao {
     public void actualizar(Insumos insumos);
     public void borrar(int id);
     public Insumos buscarPorId(int id);
+    public Insumos buscarPorCodigo(String codigo);
+    
+    public void actualizarStok(int id , int stock);
+    
+    public List<Insumos> buscar(String nombre);
+    
+    
 }

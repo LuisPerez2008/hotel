@@ -108,6 +108,7 @@ public class Login extends javax.swing.JFrame {
 
         btnInicio.setBackground(new java.awt.Color(43, 113, 140));
         btnInicio.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        btnInicio.setForeground(new java.awt.Color(255, 255, 255));
         btnInicio.setText("INGRESAR");
         btnInicio.setBorder(null);
         btnInicio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

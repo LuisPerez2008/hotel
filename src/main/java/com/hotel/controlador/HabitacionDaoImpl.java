@@ -152,16 +152,116 @@ public class HabitacionDaoImpl implements HabitacionDao {
     public void cambiarEstado(int idHabitacion, char estado) {
         String sql = "UPDATE habitacion SET estado = ? WHERE id = ?";
         try {
-            conn = Conexion.conectar(); // Establecer la conexión
-            ps = conn.prepareStatement(sql); // Preparar la consulta
-            ps.setString(1, String.valueOf(estado)); // Establecer el nuevo estado en la consulta
-            ps.setInt(2, idHabitacion); // Establecer el ID de la habitación en la consulta
-            ps.executeUpdate(); // Ejecutar la actualización
-            ps.close(); // Cerrar el PreparedStatement
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, String.valueOf(estado));
+            ps.setInt(2, idHabitacion);
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException ex) {
-            System.out.println(ex.toString()); // Manejar excepciones
+            System.out.println(ex.toString());
         } finally {
-            Conexion.cerrar(); // Cerrar la conexión
+            Conexion.cerrar();
         }
+    }
+
+    @Override
+    public List<Habitacion> buscarPorPiso(String piso) {
+        List<Habitacion> habitaciones = new ArrayList<>();
+        String sql = "SELECT * FROM habitacion WHERE piso = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, piso);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Habitacion habitacion = new Habitacion();
+                habitacion.setId(rs.getInt("id"));
+                habitacion.setNumero(rs.getString("numero"));
+                habitacion.setId_tipo(rs.getInt("id_tipo"));
+                habitacion.setPiso(rs.getString("piso"));
+                habitacion.setPrecio(rs.getDouble("precio"));
+                habitacion.setEstado(rs.getString("estado").charAt(0));
+                habitaciones.add(habitacion);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return habitaciones;
+    }
+
+    @Override
+    public List<Habitacion> buscarPorEstado(char estado) {
+        List<Habitacion> habitaciones = new ArrayList<>();
+        String sql = "SELECT * FROM habitacion WHERE estado = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, String.valueOf(estado)); // Convertimos el char a String para el PreparedStatement
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Habitacion habitacion = new Habitacion();
+                habitacion.setId(rs.getInt("id"));
+                habitacion.setNumero(rs.getString("numero"));
+                habitacion.setId_tipo(rs.getInt("id_tipo"));
+                habitacion.setPiso(rs.getString("piso"));
+                habitacion.setPrecio(rs.getDouble("precio"));
+                habitacion.setEstado(rs.getString("estado").charAt(0));
+                habitaciones.add(habitacion);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return habitaciones;
+    }
+
+    @Override
+    public List<Habitacion> buscarPorEstadoyPiso(String piso, char estado) {
+        List<Habitacion> habitaciones = new ArrayList<>();
+        String sql = "SELECT * FROM habitacion WHERE estado = ? AND piso = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, String.valueOf(estado)); // Convertimos el char a String para el PreparedStatement
+            ps.setString(2, piso);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Habitacion habitacion = new Habitacion();
+                habitacion.setId(rs.getInt("id"));
+                habitacion.setNumero(rs.getString("numero"));
+                habitacion.setId_tipo(rs.getInt("id_tipo"));
+                habitacion.setPiso(rs.getString("piso"));
+                habitacion.setPrecio(rs.getDouble("precio"));
+                habitacion.setEstado(rs.getString("estado").charAt(0));
+                habitaciones.add(habitacion);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return habitaciones;
     }
 }
