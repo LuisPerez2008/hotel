@@ -3,6 +3,7 @@ package com.hotel.controlador;
 
 import com.hotel.modelo.Insumos;
 import java.util.List;
+import java.util.Map;
 
 
 public interface InsumoDao {
@@ -17,5 +18,7 @@ public interface InsumoDao {
     
     public List<Insumos> buscar(String nombre);
     
-    
+    //para reportes 
+    public Map<String, Integer> productoxCantidad();
+    public Map<String, Integer> productoxCantidadMenos();
 }

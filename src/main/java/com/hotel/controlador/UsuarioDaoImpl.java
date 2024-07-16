@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UsuarioDaoImpl implements UsuarioDao {
 
@@ -85,7 +87,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
         String sql = "UPDATE usuario SET estado = '2' WHERE id = ?";
 
         try {
-            
+
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -184,13 +186,13 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     @Override
     public List<Usuario> BuscarPorNombre(String nombre) {
-         List<Usuario> usuarios = new ArrayList<>();
+        List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuario WHERE nombre LIKE ?";
 
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
-            ps.setString(1, "%" + nombre + "%"); 
+            ps.setString(1, "%" + nombre + "%");
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -199,8 +201,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 user.setNombre(rs.getString("nombre"));
                 user.setCorreo(rs.getString("correo"));
                 user.setRol(rs.getString("rol"));
-                
-                
+
                 usuarios.add(user);
             }
 
@@ -213,6 +214,71 @@ public class UsuarioDaoImpl implements UsuarioDao {
         }
 
         return usuarios;
+    }
+
+    @Override
+    public Map<String, Integer> reporteCantidadDeregistrosXusuario() {
+        Map<String, Integer> registrosPorUsuario = new HashMap<>();
+        String sql = "SELECT u.nombre, COUNT(u.id) AS cantidad FROM detalle d "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN usuario u ON u.id = r.id_usuario "
+                + "GROUP BY u.nombre";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String nombreUsuario = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                registrosPorUsuario.put(nombreUsuario, cantidad);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return registrosPorUsuario;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> buscarRegistroXUsuario(String nombre) {
+        List<HashMap<String, Object>> registros = new ArrayList<>();
+        String sql = "SELECT d.id, h.nombre, d.precio_total "
+                + "FROM detalle d "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN usuario u ON u.id = r.id_usuario "
+                + "JOIN huesped h ON h.id = r.id_huesped "
+                + "WHERE u.nombre = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, nombre); // Establecer el parámetro en la consulta
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                HashMap<String, Object> registro = new HashMap<>();
+                registro.put("id", rs.getInt("id"));
+                registro.put("nombre", rs.getString("nombre"));
+                registro.put("precio_total", rs.getDouble("precio_total"));
+                registros.add(registro);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return registros;
     }
 
 }

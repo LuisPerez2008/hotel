@@ -2,7 +2,9 @@
 package com.hotel.controlador;
 
 import com.hotel.modelo.Usuario;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public interface UsuarioDao {
@@ -14,5 +16,11 @@ public interface UsuarioDao {
     public Usuario iniciarSesion(String correo, String pass);
     public String buscarNombreUsuarioXidDetalle(int idDetalle);
     public List<Usuario> BuscarPorNombre(String nombre);
+    
+    //para reportes 
+    
+    public Map<String, Integer> reporteCantidadDeregistrosXusuario() ;
+    
+    public List<HashMap<String, Object>>  buscarRegistroXUsuario(String nombre) ;
     
 }

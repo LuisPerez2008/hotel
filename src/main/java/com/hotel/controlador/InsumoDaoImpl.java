@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InsumoDaoImpl implements InsumoDao {
 
@@ -112,7 +114,7 @@ public class InsumoDaoImpl implements InsumoDao {
             System.out.println(ex.toString());
 
         } finally {
-           
+
             Conexion.cerrar();
         }
     }
@@ -206,7 +208,7 @@ public class InsumoDaoImpl implements InsumoDao {
         try {
             conn = Conexion.conectar();
             ps = conn.prepareStatement(sql);
-            ps.setString(1, "%" + nombre + "%"); 
+            ps.setString(1, "%" + nombre + "%");
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -216,8 +218,7 @@ public class InsumoDaoImpl implements InsumoDao {
                 insumo.setNombre(rs.getString("nombre"));
                 insumo.setPrecio(rs.getDouble("precio"));
                 insumo.setStock(rs.getInt("stock"));
-                
-                
+
                 insumos.add(insumo);
             }
 
@@ -232,4 +233,66 @@ public class InsumoDaoImpl implements InsumoDao {
         return insumos; // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    @Override
+    public Map<String, Integer> productoxCantidad() {
+        Map<String, Integer> productos = new HashMap<>();
+        String sql = "SELECT i.nombre, SUM(e.cantidad) AS cantidad "
+                + "FROM extras e "
+                + "JOIN insumos i ON i.id = e.id_insumo "
+                + "GROUP BY i.nombre "
+                + "ORDER BY cantidad DESC "
+                + "LIMIT 5";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                productos.put(nombre, cantidad);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return productos;
+    }
+
+    @Override
+    public Map<String, Integer> productoxCantidadMenos() {
+        Map<String, Integer> productos = new HashMap<>();
+        String sql = "SELECT i.nombre, SUM(e.cantidad) AS cantidad "
+                + "FROM extras e "
+                + "JOIN insumos i ON i.id = e.id_insumo "
+                + "GROUP BY i.nombre "
+                + "ORDER BY cantidad ASC "
+                + "LIMIT 5";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String nombreProducto = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                productos.put(nombreProducto, cantidad);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+
+            Conexion.cerrar();
+        }
+
+        return productos;
+    }
 }

@@ -7,7 +7,6 @@ package com.hotel.vista;
 import com.hotel.componentes.ClienteForm;
 import com.hotel.componentes.InsumosForm;
 import com.hotel.componentes.Pricipal;
-import com.hotel.componentes.Reportes;
 import com.hotel.componentes.ReservaHabitacion;
 import com.hotel.componentes.UsuarioForm;
 import com.hotel.modelo.Usuario;
@@ -282,7 +281,9 @@ public class Sistema extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUsuariosActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        JPanel(new Reportes());
+        Reportes rep = new Reportes();
+        rep.setVisible(true);
+        
     }//GEN-LAST:event_btnReportesActionPerformed
 
     private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed

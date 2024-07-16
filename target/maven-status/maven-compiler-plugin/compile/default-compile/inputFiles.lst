@@ -8,7 +8,6 @@ C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\modelo\I
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\controlador\UsuarioDaoImpl.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\modelo\Usuario.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\modelo\Extra.java
-C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\componentes\Reportes.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\vista\Sistema.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\controlador\ReservaDaoImpl.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\vista\Login.java
@@ -36,4 +35,5 @@ C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\controla
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\utils\ReporteExcel_1.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\vista\ExtrasView.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\componentes\ReservaHabitacion.java
+C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\vista\Reportes.java
 C:\Users\51901\Documents\NetBeansProjects\hotel\src\main\java\com\hotel\controlador\ExtraDao.java

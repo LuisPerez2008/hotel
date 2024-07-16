@@ -23,14 +23,11 @@ import java.util.Properties;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author 51901
- */
+
 public class Correos extends javax.swing.JFrame {
 
     private String emailFrom = "luis.08.2044@gmail.com";
-    private String password = "";
+    private String password = "gztanhyhsotnvyyo";
 
     private String mailTo;
     private String subject;

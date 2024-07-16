@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.filechooser.FileSystemView;
 
 public class DetalleDaoImpl implements DetalleDao {
@@ -504,5 +505,202 @@ public class DetalleDaoImpl implements DetalleDao {
             Conexion.cerrar();
         }
 
+    }
+
+    @Override
+    public double GanaciaUltimoMes() {
+
+        double totalPrecio = 0.0;
+        String sql = "SELECT SUM(d.precio_total) AS total_precio "
+                + "FROM detalle d "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "WHERE r.fecha_reserva >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                totalPrecio = rs.getDouble("total_precio");
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return totalPrecio;
+    }
+
+    @Override
+    public Map<String, Integer> reservasUltimos30Dias() {
+        Map<String, Integer> reservasPorDia = new HashMap<>();
+        String sql = "SELECT DATE(NOW() - INTERVAL n.n DAY) AS dia, "
+                + "COALESCE(COUNT(r.fecha_reserva), 0) AS cantidad_reservas "
+                + "FROM (SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 "
+                + "UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 "
+                + "UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 "
+                + "UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15 "
+                + "UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 "
+                + "UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23 "
+                + "UNION ALL SELECT 24 UNION ALL SELECT 25 UNION ALL SELECT 26 UNION ALL SELECT 27 "
+                + "UNION ALL SELECT 28 UNION ALL SELECT 29) n "
+                + "LEFT JOIN reserva r ON DATE(r.fecha_reserva) = DATE(NOW() - INTERVAL n.n DAY) "
+                + "WHERE DATE(NOW() - INTERVAL n.n DAY) >= CURDATE() - INTERVAL 30 DAY "
+                + "GROUP BY dia "
+                + "ORDER BY dia DESC";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String dia = rs.getString("dia");
+                int cantidadReservas = rs.getInt("cantidad_reservas");
+                reservasPorDia.put(dia, cantidadReservas);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return reservasPorDia;
+    }
+
+    @Override
+    public Map<String, Integer> cantMetodoPago() {
+        Map<String, Integer> metodoPagoMap = new HashMap<>();
+        String sql = "SELECT m.tipopago AS nombre, COUNT(d.id) AS cantidad "
+                + "FROM detalle d "
+                + "JOIN habitacion h ON h.id = d.id_habitacion "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN metodo_pago m ON m.id = d.id_metodoPago "
+                + "GROUP BY m.tipopago";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                int cantidad = rs.getInt("cantidad");
+                metodoPagoMap.put(nombre, cantidad);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return metodoPagoMap;
+    }
+
+    @Override
+    public double GanaciaProductoUltimoMes() {
+        double totalPrecio = 0.0;
+        String sql = "SELECT SUM(e.precio) AS total_precio "
+                + "FROM extras e "
+                + "JOIN reserva r ON r.id = e.id_reserva "
+                + "WHERE r.fecha_reserva >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                totalPrecio = rs.getDouble("total_precio");
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return totalPrecio;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> listarDetalleReporte(int id) {
+        List<HashMap<String, Object>> detalles = new ArrayList<>();
+        String sql = "SELECT d.id AS 'Id Detalle', hab.numero AS 'N° Habitacion', h.nombre AS 'Cliente', "
+                + "r.fecha_reserva AS 'Fecha de Ingreso', r.fecha_salida AS 'Fecha de Salida', "
+                + "d.precio_total AS 'Precio Total' "
+                + "FROM detalle d "
+                + "JOIN habitacion hab ON d.id_habitacion = hab.id "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN huesped h ON h.id = r.id_huesped "
+                + "JOIN usuario u ON u.id = r.id_usuario "
+                + "WHERE d.id = ?";
+
+        try {
+            conn = Conexion.conectar();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id); // Establecer el parámetro en la consulta
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                HashMap<String, Object> detalle = new HashMap<>();
+                detalle.put("Id Detalle", rs.getInt("Id Detalle"));
+                detalle.put("N° Habitacion", rs.getString("N° Habitacion"));
+                detalle.put("Cliente", rs.getString("Cliente"));
+                detalle.put("Fecha de Ingreso", rs.getDate("Fecha de Ingreso"));
+                detalle.put("Fecha de Salida", rs.getDate("Fecha de Salida"));
+                detalle.put("Precio Total", rs.getDouble("Precio Total"));
+                detalles.add(detalle);
+            }
+
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return detalles;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> listarExtrasReporte(int id) {
+        List<HashMap<String, Object>> extrasReporte = new ArrayList<>();
+        String sql = "SELECT i.nombre AS Producto, e.cantidad AS cantidad, e.precio "
+                + "FROM detalle d "
+                + "JOIN reserva r ON r.id = d.id_reserva "
+                + "JOIN extras e ON e.id_reserva = r.id "
+                + "JOIN insumos i ON i.id = e.id_insumo "
+                + "WHERE d.id = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id); // Establecer el parámetro en la consulta
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                HashMap<String, Object> extra = new HashMap<>();
+                extra.put("Producto", rs.getString("Producto"));
+                extra.put("cantidad", rs.getInt("cantidad"));
+                extra.put("precio", rs.getDouble("precio"));
+                extrasReporte.add(extra);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            Conexion.cerrar();
+        }
+
+        return extrasReporte;
     }
 }

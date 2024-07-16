@@ -1,10 +1,12 @@
 com\hotel\componentes\ReservaHabitacion$6.class
 com\hotel\componentes\InsumosForm$6.class
+com\hotel\vista\Reportes$4.class
 com\hotel\componentes\ReservaHabitacion$15.class
 com\hotel\utils\Evento.class
 com\hotel\componentes\ReservaHabitacion$25.class
 com\hotel\componentes\ReservaHabitacion$3.class
 com\hotel\componentes\ReservaHabitacion$9.class
+com\hotel\vista\Reportes$1.class
 com\hotel\componentes\ReservaHabitacion$28.class
 com\hotel\componentes\ReservaHabitacion$18.class
 com\hotel\vista\Correos$5.class
@@ -14,9 +16,9 @@ com\hotel\controlador\DetalleDaoImpl.class
 com\hotel\vista\Sistema.class
 com\hotel\vista\Sistema$7.class
 com\hotel\componentes\ClienteForm$8.class
+com\hotel\vista\Reportes$7.class
 com\hotel\vista\ReservaVista$5.class
 com\hotel\componentes\InsumosForm$3.class
-com\hotel\componentes\Reportes.class
 com\hotel\componentes\ClienteForm$5.class
 com\hotel\componentes\UsuarioForm$3.class
 com\hotel\componentes\UsuarioForm$6.class
@@ -27,12 +29,14 @@ com\hotel\componentes\ReservaHabitacion$12.class
 com\hotel\componentes\ClienteForm$2.class
 com\hotel\vista\Correos$3.class
 com\hotel\componentes\InsumosForm$1.class
+com\hotel\vista\Reportes$6.class
 com\hotel\vista\ReservaVista.class
 com\hotel\componentes\UsuarioForm$4.class
 com\hotel\componentes\ClienteForm$4.class
 com\hotel\componentes\ReservaHabitacion$20.class
 com\hotel\componentes\ReservaHabitacion$13.class
 com\hotel\componentes\ReservaHabitacion$4.class
+com\hotel\vista\Reportes.class
 com\hotel\componentes\ReservaHabitacion$26.class
 com\hotel\componentes\UsuarioForm$5.class
 com\hotel\vista\ReservaVista$3.class
@@ -48,6 +52,7 @@ com\hotel\controlador\ReservaDaoImpl.class
 com\hotel\componentes\InsumosForm$8.class
 com\hotel\componentes\ReservaHabitacion$5.class
 com\hotel\controlador\HuespedDaoImpl.class
+com\hotel\vista\Reportes$5.class
 com\hotel\componentes\ClienteForm$9.class
 com\hotel\utils\ReporteExcel.class
 com\hotel\vista\Sistema$3.class
@@ -61,6 +66,7 @@ com\hotel\componentes\ReservaHabitacion$16.class
 com\hotel\componentes\ReservaHabitacion$7.class
 com\hotel\recursos\Conexion.class
 com\hotel\componentes\ReservaHabitacion$21.class
+com\hotel\vista\Reportes$3.class
 com\hotel\utils\ReporteExcel_1.class
 com\hotel\componentes\ReservaHabitacion$24.class
 com\hotel\componentes\InsumosForm$7.class
@@ -83,8 +89,10 @@ com\hotel\componentes\ReservaHabitacion$11.class
 com\hotel\vista\ReservaEditar.class
 com\hotel\vista\ReservaVista$1.class
 com\hotel\componentes\ReservaHabitacion$29.class
+com\hotel\vista\Reportes$2.class
 com\hotel\vista\Sistema$6.class
 com\hotel\componentes\ReservaHabitacion$2.class
+com\hotel\vista\Reportes$8.class
 com\hotel\componentes\InsumosForm$5.class
 com\hotel\controlador\ReservaDao.class
 com\hotel\componentes\ClienteForm$7.class
