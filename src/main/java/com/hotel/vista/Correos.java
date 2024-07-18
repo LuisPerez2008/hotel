@@ -26,8 +26,8 @@ import javax.swing.JOptionPane;
 
 public class Correos extends javax.swing.JFrame {
 
-    private String emailFrom = "luis.08.2044@gmail.com";
-    private String password = "gztanhyhsotnvyyo";
+    private String emailFrom = "tu correo";
+    private String password = "tu contra";
 
     private String mailTo;
     private String subject;

@@ -869,7 +869,7 @@ public class Reportes extends javax.swing.JFrame {
 
         }
         JFreeChart grafico = ChartFactory.createPieChart(
-                "ventas por vendedores",
+                "Registros por vendedores",
                 data,
                 true,
                 true,
